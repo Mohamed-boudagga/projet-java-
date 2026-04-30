@@ -66,9 +66,9 @@ public class Main {
         service.getAll().forEach(System.out::println);
         */
 
-        System.out.println("\n============================================");
+        System.out.println("\n=========================================");
         System.out.println("   Test CRUD termine avec succes !         ");
         System.out.println("   Vérifiez phpMyAdmin, les données sont là !");
-        System.out.println("============================================");
+        System.out.println("===========================================");
     }
 }
