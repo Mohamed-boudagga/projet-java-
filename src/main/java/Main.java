@@ -58,13 +58,13 @@ public class Main {
         service.getAll().forEach(System.out::println);
 
         // DELETE
-        /*
+
         System.out.println("\n===== DELETE (id=1) =====");
         if (trouve != null) service.delete(trouve);
         
         System.out.println("\n===== GET ALL apres DELETE =====");
         service.getAll().forEach(System.out::println);
-        */
+
 
         System.out.println("\n=========================================");
         System.out.println("   Test CRUD termine avec succes !         ");
