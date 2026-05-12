@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.LoginController"
+            prefWidth="500" prefHeight="400"
+            style="-fx-background-color: #1a1a2e;">
+
+    <!-- Définition du ToggleGroup hors de l'arbre visuel -->
+    <fx:define>
+        <ToggleGroup fx:id="roleGroup"/>
+    </fx:define>
+
+    <VBox alignment="CENTER" spacing="20"
+          AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding><Insets top="40" bottom="40" left="60" right="60"/></padding>
+
+        <!-- Titre -->
+        <Label text="SkillQuest"
+               style="-fx-font-size:32px; -fx-font-weight:bold; -fx-text-fill:#e94560;"/>
+        <Label text="Connexion"
+               style="-fx-font-size:16px; -fx-text-fill:#a8a8b3;"/>
+
+        <!-- Email -->
+        <TextField fx:id="emailField" promptText="Email"
+                   maxWidth="360"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white;
+                          -fx-prompt-text-fill:#a8a8b3; -fx-background-radius:8;
+                          -fx-border-color:#e94560; -fx-border-radius:8; -fx-padding:10;
+                          -fx-font-size:14px;"/>
+
+        <!-- Mot de passe -->
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"
+                       maxWidth="360"
+                       style="-fx-background-color:#16213e; -fx-text-fill:white;
+                              -fx-prompt-text-fill:#a8a8b3; -fx-background-radius:8;
+                              -fx-border-color:#e94560; -fx-border-radius:8; -fx-padding:10;
+                              -fx-font-size:14px;"/>
+
+        <!-- Choix du rôle -->
+        <HBox alignment="CENTER" spacing="30">
+            <RadioButton fx:id="radioEtudiant" text="Étudiant" selected="true"
+                         toggleGroup="$roleGroup"
+                         style="-fx-text-fill:white; -fx-font-size:13px;"/>
+            <RadioButton fx:id="radioAdmin" text="Admin"
+                         toggleGroup="$roleGroup"
+                         style="-fx-text-fill:white; -fx-font-size:13px;"/>
+        </HBox>
+
+        <!-- Captcha Style reCAPTCHA -->
+        <HBox alignment="CENTER_LEFT" spacing="15" maxWidth="360"
+              style="-fx-background-color: #f9f9f9; -fx-padding: 10; -fx-background-radius: 3;
+                     -fx-border-color: #d3d3d3; -fx-border-radius: 3; -fx-border-width: 1;">
+            <CheckBox fx:id="captchaCheckBox" style="-fx-cursor: hand; -fx-scale-x: 1.5; -fx-scale-y: 1.5;"/>
+            <Label text="Je ne suis pas un robot"
+                   style="-fx-text-fill: #555555; -fx-font-size: 14px; -fx-font-family: 'Roboto', 'Arial';"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER" spacing="2">
+                <!-- Simulation du logo reCAPTCHA avec des symboles -->
+                <Label text="♻" style="-fx-text-fill: #4A90E2; -fx-font-size: 20px;"/>
+                <Label text="reCAPTCHA" style="-fx-text-fill: #555555; -fx-font-size: 8px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Message erreur -->
+        <Label fx:id="erreurLabel" text=""
+               style="-fx-text-fill:#e94560; -fx-font-size:12px;"/>
+
+        <!-- Bouton Connexion -->
+        <Button fx:id="btnConnexion" text="Se connecter"
+                onAction="#handleConnexion"
+                maxWidth="360"
+                style="-fx-background-color:#e94560; -fx-text-fill:white;
+                       -fx-font-size:15px; -fx-font-weight:bold;
+                       -fx-background-radius:8; -fx-cursor:hand;
+                       -fx-padding:10 40 10 40;"/>
+
+        <!-- Lien inscription -->
+        <Hyperlink fx:id="lienInscription" text="Pas encore inscrit ? S'inscrire"
+                   onAction="#handleInscription"
+                   style="-fx-text-fill:#a8a8b3; -fx-font-size:12px;"/>
+
+    </VBox>
+</AnchorPane>

@@ -1,74 +1,136 @@
+import models.Admin;
+import models.Cours;
 import models.Etudiant;
+import services.ServiceAdmin;
+import services.ServiceCours;
 import services.ServiceEtudiant;
 import utils.MyDataBase;
+import utils.PasswordUtils;
 
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("============================================");
-        System.out.println("   SkillQuest — Module Gestion Etudiants   ");
-        System.out.println("============================================");
+        banner("SkillQuest v2 — Module Gestion Utilisateurs");
 
         if (!MyDataBase.getInstance().isConnected()) {
-            System.err.println(" Impossible de continuer sans connexion a la base de donnees.");
+            System.err.println("Impossible de continuer sans connexion à la base de données.");
             return;
         }
 
-
+        // Nettoyage des tables pour un test propre
         try {
             Statement stmt = MyDataBase.getInstance().getCnx().createStatement();
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=0");
+            stmt.executeUpdate("TRUNCATE TABLE cours");
             stmt.executeUpdate("TRUNCATE TABLE etudiant");
-            System.out.println(" Base de donnees reinitialisee pour le test.");
+            stmt.executeUpdate("TRUNCATE TABLE admin");
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=1");
+            System.out.println("✔ Tables réinitialisées.\n");
         } catch (SQLException e) {
-            System.out.println("Erreur de nettoyage : " + e.getMessage());
+            System.out.println("Erreur nettoyage : " + e.getMessage());
         }
 
-        ServiceEtudiant service = new ServiceEtudiant();
+        // MODULE ADMIN — CRUD
 
-        // ADD
-        System.out.println("\n===== ADD =====");
-        service.add(new Etudiant("Ben Ali",  "Ahmed",  "ahmed.benali@esprit.tn",  "pass1*2*3*", 1,   0, false));
-        service.add(new Etudiant("Trabelsi", "Sarra",    "sarra@esprit.tn",           "pass4*5*6*", 2, 150, false));
-        service.add(new Etudiant("Mansouri", "Jihed",    "jihed@esprit.tn",           "pass7*8*9*", 3, 500, true));
-        service.add(new Etudiant("briki",    "oussama",  "oussama@esprit.tn",         "pass1*2*3*44", 1,   0, false));
-        service.add(new Etudiant("Boudagga",  "Mohamed",  "Mohamed.Boudagga@esprit.tn",  "pass12345678", 5,   1000, true));
-        //  GET ALL
-        System.out.println("\n===== GET ALL =====");
-        service.getAll().forEach(System.out::println);
+        banner("MODULE ADMIN");
+        ServiceAdmin serviceAdmin = new ServiceAdmin();
 
-        // GET BY ID
-        System.out.println("\n===== GET BY ID (id=1) =====");
-        Etudiant trouve = service.getById(1);
-        System.out.println(trouve);
+        serviceAdmin.add(new Admin("Admin",    "Principal", "admin@skillquest.tn", "admin123"));
+        serviceAdmin.add(new Admin("Directeur","Sami",      "sami@skillquest.tn",  "sami2024"));
 
-        //  UPDATE
-        System.out.println("\n===== UPDATE =====");
-        if (trouve != null) {
-            trouve.setPoints(300);
-            trouve.setNiveau(2);
-            service.update(trouve);
+        System.out.println("\n--- Tous les admins ---");
+        serviceAdmin.getAll().forEach(System.out::println);
+
+        // Test login admin
+        System.out.println("\n--- Login Admin ---");
+        Admin adminConnecte = serviceAdmin.getByEmail("admin@skillquest.tn");
+        if (adminConnecte != null && PasswordUtils.checkPassword("admin123", adminConnecte.getMotDePasse())) {
+            System.out.println("Connecté : " + adminConnecte);
+        } else {
+            System.out.println("Connexion échouée");
         }
 
-        // GET ALL apres UPDATE
-        System.out.println("\n===== GET ALL apres UPDATE =====");
-        service.getAll().forEach(System.out::println);
+        // MODULE ETUDIANT — CRUD avec telephone & sexe
 
-        // DELETE
+        banner("MODULE ETUDIANT");
+        ServiceEtudiant serviceEtudiant = new ServiceEtudiant();
 
-        System.out.println("\n===== DELETE (id=1) =====");
-        if (trouve != null) service.delete(trouve);
-        
-        System.out.println("\n===== GET ALL apres DELETE =====");
-        service.getAll().forEach(System.out::println);
+        serviceEtudiant.add(new Etudiant("Ben Ali",  "Ahmed",  "ahmed@esprit.tn",  "pass123",       1,   0,   false, "20123456", "M"));
+        serviceEtudiant.add(new Etudiant("Trabelsi", "Sarra",  "sarra@esprit.tn",  "pass456",       2, 150,   false, "22334455", "F"));
+        serviceEtudiant.add(new Etudiant("Mansouri", "Khalil", "khalil@esprit.tn", "pass789",       3, 500,   true,  "55667788", "M"));
+        serviceEtudiant.add(new Etudiant("Briki",    "Oussama","oussama@esprit.tn","pass1234",      1,   0,   false, "98765432", "M"));
+        serviceEtudiant.add(new Etudiant("Boudagga", "Mohamed","mohamed@esprit.tn","pass12345678",  5,1000,   true,  "27182818", "M"));
+
+        System.out.println("\n--- Tous les étudiants ---");
+        serviceEtudiant.getAll().forEach(System.out::println);
+
+        // Update
+        System.out.println("--- UPDATE étudiant id=1 ---");
+        Etudiant e1 = serviceEtudiant.getById(1);
+        if (e1 != null) {
+            e1.setPoints(300);
+            e1.setNiveau(2);
+            e1.setTelephone("20999999");
+            serviceEtudiant.update(e1);
+        }
+
+        // Bloquer / Débloquer (action Admin)
+        System.out.println("\n--- BLOCAGE/DEBLOCAGE (action Admin) ---");
+        serviceEtudiant.bloquer(2);    // Sarra bloquée
+        serviceEtudiant.bloquer(4);    // Briki bloqué
+        serviceEtudiant.debloquer(2);  // Sarra débloquée
+
+        System.out.println("\n--- Etudiants après blocage/déblocage ---");
+        serviceEtudiant.getAll().forEach(System.out::println);
+
+        // MODULE COURS — CRUD (géré par Admin)
+
+        banner("MODULE COURS (géré par Admin)");
+        ServiceCours serviceCours = new ServiceCours();
+
+        int adminId = adminConnecte != null ? adminConnecte.getId() : 1;
+
+        serviceCours.add(new Cours("Java Débutant",      "Introduction à Java.",              1, adminId));
+        serviceCours.add(new Cours("Java Avancé",        "Streams, Lambdas, Génériques.",     3, adminId));
+        serviceCours.add(new Cours("Base de Données SQL","Requêtes SQL avec MySQL.",          2, adminId));
+        serviceCours.add(new Cours("Design Patterns",    "Patrons de conception GoF.",        4, adminId));
+        serviceCours.add(new Cours("Développement Web",  "HTML, CSS, JS et frameworks.",      2, adminId));
+
+        System.out.println("\n--- Tous les cours ---");
+        serviceCours.getAll().forEach(System.out::println);
+
+        // Cours accessibles à un étudiant de niveau 2
+        System.out.println("\n--- Cours accessibles à un étudiant niveau 2 ---");
+        serviceCours.getCoursAccessibles(2).forEach(System.out::println);
+
+        // Update cours
+        System.out.println("--- UPDATE cours id=1 ---");
+        Cours c1 = serviceCours.getById(1);
+        if (c1 != null) {
+            c1.setTitre("Java Débutant — Edition 2026");
+            serviceCours.update(c1);
+        }
+
+        // Delete cours
+        System.out.println("--- DELETE cours id=1 ---");
+        Cours cDel = serviceCours.getById(1);
+        if (cDel != null) serviceCours.delete(cDel);
+
+        System.out.println("\n--- Cours après suppression ---");
+        serviceCours.getAll().forEach(System.out::println);
 
 
-        System.out.println("\n=========================================");
-        System.out.println("   Test CRUD termine avec succes !         ");
-        System.out.println("   Vérifiez phpMyAdmin, les données sont là !");
-        System.out.println("===========================================");
+        banner("Tous les tests CRUD terminés avec succès !");
+    }
+
+    private static void banner(String title) {
+        String line = "=".repeat(55);
+        System.out.println("\n" + line);
+        System.out.printf("  %s%n", title);
+        System.out.println(line);
     }
 }
