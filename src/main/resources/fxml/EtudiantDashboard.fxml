@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.EtudiantController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#1a1a2e;">
+
+    <!-- ===== BARRE LATERALE ===== -->
+    <left>
+        <VBox spacing="5" prefWidth="200"
+              style="-fx-background-color:#16213e; -fx-padding:20;">
+
+            <Label text="SkillQuest"
+                   style="-fx-font-size:22px; -fx-font-weight:bold;
+                          -fx-text-fill:#e94560; -fx-padding:0 0 10 0;"/>
+
+            <Label fx:id="labelBienvenue" text="Bonjour !"
+                   style="-fx-font-size:13px; -fx-text-fill:#a8a8b3;
+                          -fx-wrap-text:true; -fx-padding:0 0 20 0;"/>
+
+            <Button fx:id="btnProfil" text="📋  Mon Profil"
+                    onAction="#afficherProfil"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:#e94560; -fx-text-fill:white;
+                           -fx-font-size:13px; -fx-background-radius:6;
+                           -fx-padding:10; -fx-cursor:hand; -fx-alignment:CENTER-LEFT;"/>
+
+            <Button fx:id="btnCours" text="📚  Mes Cours"
+                    onAction="#afficherCours"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:transparent; -fx-text-fill:#a8a8b3;
+                           -fx-font-size:13px; -fx-background-radius:6;
+                           -fx-padding:10; -fx-cursor:hand; -fx-alignment:CENTER-LEFT;"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="🚪  Déconnexion"
+                    onAction="#handleDeconnexion"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:transparent; -fx-text-fill:#e94560;
+                           -fx-font-size:13px; -fx-border-color:#e94560;
+                           -fx-border-radius:6; -fx-background-radius:6;
+                           -fx-padding:8; -fx-cursor:hand;"/>
+        </VBox>
+    </left>
+
+    <!-- ===== CONTENU PRINCIPAL ===== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding:30;">
+
+            <!-- === PROFIL === -->
+            <VBox fx:id="panelProfil" spacing="15">
+                <Label text="Mon Profil"
+                       style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+
+                <GridPane hgap="15" vgap="12">
+                    <!-- Colonne labels -->
+                    <Label text="Nom :"       GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Prénom :"    GridPane.columnIndex="0" GridPane.rowIndex="1"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Email :"     GridPane.columnIndex="0" GridPane.rowIndex="2"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Téléphone :" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Sexe :"      GridPane.columnIndex="0" GridPane.rowIndex="4"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Niveau :"    GridPane.columnIndex="0" GridPane.rowIndex="5"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <Label text="Points :"    GridPane.columnIndex="0" GridPane.rowIndex="6"
+                           style="-fx-text-fill:#a8a8b3; -fx-font-size:13px;"/>
+                    <!-- Colonne valeurs -->
+                    <Label fx:id="valNom"       GridPane.columnIndex="1" GridPane.rowIndex="0"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
+                    <Label fx:id="valPrenom"    GridPane.columnIndex="1" GridPane.rowIndex="1"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
+                    <Label fx:id="valEmail"     GridPane.columnIndex="1" GridPane.rowIndex="2"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
+                    <Label fx:id="valTelephone" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
+                    <Label fx:id="valSexe"      GridPane.columnIndex="1" GridPane.rowIndex="4"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
+                    <Label fx:id="valNiveau"    GridPane.columnIndex="1" GridPane.rowIndex="5"
+                           style="-fx-text-fill:#e94560; -fx-font-size:15px; -fx-font-weight:bold;"/>
+                    <Label fx:id="valPoints"    GridPane.columnIndex="1" GridPane.rowIndex="6"
+                           style="-fx-text-fill:#e94560; -fx-font-size:15px; -fx-font-weight:bold;"/>
+                </GridPane>
+            </VBox>
+
+            <!-- === MES COURS === -->
+            <VBox fx:id="panelCours" spacing="15" visible="false" managed="false">
+                <Label text="Mes Cours Disponibles"
+                       style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                <TableView fx:id="tableCours" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color:#16213e;">
+                    <columns>
+                        <TableColumn fx:id="colTitre"       text="Titre"          prefWidth="260"/>
+                        <TableColumn fx:id="colDescription" text="Description"    prefWidth="300"/>
+                        <TableColumn fx:id="colNiveau"      text="Niveau requis"  prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

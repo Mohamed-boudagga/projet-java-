@@ -2,6 +2,7 @@ package utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -18,14 +19,11 @@ public class MyDataBase {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";   // vide par defaut WAMP
 
-    // URL sans nom de base (pour creer la base si elle n'existe pas)
     private static final String URL_NO_DB = "jdbc:mysql://" + HOST + ":" + PORT
             + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 
-    // URL avec nom de la base
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME
             + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-
 
     private Connection cnx;
 
@@ -33,61 +31,176 @@ public class MyDataBase {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Etape 1 : creer la base de donnees si elle n'existe pas
+            // Etape 1 : creer la base si elle n'existe pas
             createDatabaseIfNotExists();
 
-            // Etape 2 : se connecter a la base
+            // Etape 2 : connexion a la base
             this.cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             System.out.println(" Connexion WAMP/MySQL reussie !");
 
-            // Etape 3 : creer la table si elle n'existe pas
-            createTableIfNotExists();
+            // Etape 3 : creer les tables si elles n'existent pas
+            createTablesIfNotExist();
+
+            // Etape 4 : migration automatique des colonnes manquantes
+            migrateColumnsIfNeeded();
 
         } catch (ClassNotFoundException e) {
             System.out.println(" Driver MySQL introuvable : " + e.getMessage());
         } catch (SQLException e) {
             System.out.println(" Erreur connexion : " + e.getMessage());
-            System.out.println("   → Verifiez que WAMP est demarre.");
+            System.out.println("   Verifiez que WAMP est demarre.");
         }
     }
 
-    /**
-     * Cree la base de donnees 'skillquest' si elle n'existe pas encore.
-     */
+    // ----------------------------------------------------------------
+    // Crée la base de données si absente
+    // ----------------------------------------------------------------
     private void createDatabaseIfNotExists() throws SQLException {
-        try (Connection tempCnx = DriverManager.getConnection(URL_NO_DB, USERNAME, PASSWORD);
-             Statement stmt = tempCnx.createStatement()) {
-            stmt.executeUpdate(
+        try (Connection tmp = DriverManager.getConnection(URL_NO_DB, USERNAME, PASSWORD);
+             Statement  st  = tmp.createStatement()) {
+            st.executeUpdate(
                 "CREATE DATABASE IF NOT EXISTS `" + DB_NAME + "` " +
-                "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-            );
+                "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             System.out.println(" Base de donnees '" + DB_NAME + "' verifiee/creee.");
         }
     }
 
-    /**
-     * Cree la table 'etudiant' si elle n'existe pas encore.
-     */
-    private void createTableIfNotExists() {
-        String sql = "CREATE TABLE IF NOT EXISTS `etudiant` (" +
-                     "  `id`           INT          NOT NULL AUTO_INCREMENT," +
-                     "  `nom`          VARCHAR(100) NOT NULL," +
-                     "  `prenom`       VARCHAR(100) NOT NULL," +
-                     "  `email`        VARCHAR(150) NOT NULL UNIQUE," +
-                     "  `mot_de_passe` VARCHAR(255) NOT NULL," +
-                     "  `niveau`       INT          NOT NULL DEFAULT 1," +
-                     "  `points`       INT          NOT NULL DEFAULT 0," +
-                     "  `est_mentor`   TINYINT(1)   NOT NULL DEFAULT 0," +
-                     "  PRIMARY KEY (`id`)" +
-                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
-        try (Statement stmt = cnx.createStatement()) {
-            stmt.executeUpdate(sql);
-            System.out.println(" Table 'etudiant' verifiee/creee.");
+    // ----------------------------------------------------------------
+    // Crée les 3 tables (admin, etudiant, cours) si elles n'existent pas
+    // ----------------------------------------------------------------
+    private void createTablesIfNotExist() {
+        try (Statement st = cnx.createStatement()) {
+
+            // TABLE admin
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `admin` (" +
+                "  `id`           INT          NOT NULL AUTO_INCREMENT," +
+                "  `nom`          VARCHAR(100) NOT NULL," +
+                "  `prenom`       VARCHAR(100) NOT NULL," +
+                "  `email`        VARCHAR(150) NOT NULL UNIQUE," +
+                "  `mot_de_passe` VARCHAR(255) NOT NULL," +
+                "  PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'admin' verifiee/creee.");
+
+            // TABLE etudiant (schema complet v2)
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `etudiant` (" +
+                "  `id`           INT           NOT NULL AUTO_INCREMENT," +
+                "  `nom`          VARCHAR(100)  NOT NULL," +
+                "  `prenom`       VARCHAR(100)  NOT NULL," +
+                "  `email`        VARCHAR(150)  NOT NULL UNIQUE," +
+                "  `mot_de_passe` VARCHAR(255)  NOT NULL," +
+                "  `niveau`       INT           NOT NULL DEFAULT 1," +
+                "  `points`       INT           NOT NULL DEFAULT 0," +
+                "  `est_mentor`   TINYINT(1)    NOT NULL DEFAULT 0," +
+                "  `telephone`    VARCHAR(20)   DEFAULT NULL," +
+                "  `sexe`         ENUM('M','F') DEFAULT NULL," +
+                "  `est_bloque`   TINYINT(1)    NOT NULL DEFAULT 0," +
+                "  PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'etudiant' verifiee/creee.");
+
+            // TABLE cours
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `cours` (" +
+                "  `id`            INT          NOT NULL AUTO_INCREMENT," +
+                "  `titre`         VARCHAR(200) NOT NULL," +
+                "  `description`   TEXT," +
+                "  `niveau_requis` INT          NOT NULL DEFAULT 1," +
+                "  `admin_id`      INT          NOT NULL," +
+                "  PRIMARY KEY (`id`)," +
+                "  CONSTRAINT `fk_cours_admin`" +
+                "    FOREIGN KEY (`admin_id`) REFERENCES `admin`(`id`)" +
+                "    ON DELETE CASCADE ON UPDATE CASCADE" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'cours' verifiee/creee.");
+
+            // TABLE test
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `test` (" +
+                "  `id`          INT          NOT NULL AUTO_INCREMENT," +
+                "  `titre`       VARCHAR(200) NOT NULL," +
+                "  `score_min`   INT          NOT NULL DEFAULT 50," +
+                "  `cours_id`    INT          NOT NULL," +
+                "  PRIMARY KEY (`id`)," +
+                "  CONSTRAINT `fk_test_cours`" +
+                "    FOREIGN KEY (`cours_id`) REFERENCES `cours`(`id`)" +
+                "    ON DELETE CASCADE ON UPDATE CASCADE" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'test' verifiee/creee.");
+
+            // TABLE certificat
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `certificat` (" +
+                "  `id`          INT          NOT NULL AUTO_INCREMENT," +
+                "  `nom`         VARCHAR(200) NOT NULL," +
+                "  `test_id`     INT          NOT NULL," +
+                "  PRIMARY KEY (`id`)," +
+                "  CONSTRAINT `fk_certif_test`" +
+                "    FOREIGN KEY (`test_id`) REFERENCES `test`(`id`)" +
+                "    ON DELETE CASCADE ON UPDATE CASCADE" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'certificat' verifiee/creee.");
+
+            // TABLE jeu
+            st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS `jeu` (" +
+                "  `id`          INT          NOT NULL AUTO_INCREMENT," +
+                "  `nom`         VARCHAR(200) NOT NULL," +
+                "  `type`        ENUM('BATTLE', 'QUIZ') NOT NULL," +
+                "  `description` TEXT," +
+                "  PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            System.out.println("OK Table 'jeu' verifiee/creee.");
+
         } catch (SQLException e) {
-            System.out.println(" Erreur creation table : " + e.getMessage());
+            System.out.println("ERREUR creation tables : " + e.getMessage());
         }
     }
 
+    // ----------------------------------------------------------------
+    // Migration automatique : ajoute les colonnes manquantes à etudiant
+    // Utile si la table existait AVANT la v2 (sans telephone/sexe/est_bloque)
+    // ----------------------------------------------------------------
+    private void migrateColumnsIfNeeded() {
+        // { nom_table, nom_colonne, definition_SQL }
+        String[][] colonnes = {
+            { "etudiant", "telephone",  "VARCHAR(20) DEFAULT NULL"        },
+            { "etudiant", "sexe",       "ENUM('M','F') DEFAULT NULL"      },
+            { "etudiant", "est_bloque", "TINYINT(1) NOT NULL DEFAULT 0"   }
+        };
+        for (String[] c : colonnes) {
+            ajouterColonneSiAbsente(c[0], c[1], c[2]);
+        }
+    }
+
+    /**
+     * Vérifie via les métadonnées JDBC si une colonne existe dans la table.
+     * Si elle est absente, exécute un ALTER TABLE pour l'ajouter.
+     */
+    private void ajouterColonneSiAbsente(String table, String colonne, String definition) {
+        try {
+            ResultSet rs = cnx.getMetaData().getColumns(DB_NAME, null, table, colonne);
+            boolean existe = rs.next();
+            rs.close();
+
+            if (!existe) {
+                try (Statement st = cnx.createStatement()) {
+                    st.executeUpdate(
+                        "ALTER TABLE `" + table + "` ADD COLUMN `" + colonne + "` " + definition);
+                    System.out.println("Migration OK : colonne '" + colonne
+                            + "' ajoutee a la table '" + table + "'.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur migration colonne '" + colonne + "' : " + e.getMessage());
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Singleton / accesseurs
+    // ----------------------------------------------------------------
     public static MyDataBase getInstance() {
         if (instance == null) {
             instance = new MyDataBase();
@@ -95,11 +208,8 @@ public class MyDataBase {
         return instance;
     }
 
-    public Connection getCnx() {
-        return cnx;
-    }
+    public Connection getCnx() { return cnx; }
 
-    /** Verifie si la connexion est active */
     public boolean isConnected() {
         try {
             return cnx != null && !cnx.isClosed();
