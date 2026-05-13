@@ -10,7 +10,7 @@ public class Battle {
     private LocalDateTime endTime;
     private String gagnant;
 
-    // Constructeur vide (Indispensable pour certaines opérations)
+    // Constructeur vide
     public Battle() {}
 
     // Constructeur complet

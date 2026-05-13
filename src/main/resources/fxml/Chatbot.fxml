@@ -11,14 +11,14 @@
 
 <BorderPane prefHeight="500.0" prefWidth="400.0" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChatbotController">
    <top>
-      <VBox alignment="CENTER" style="-fx-background-color: #2e004d; -fx-padding: 15;">
+      <VBox alignment="CENTER" style="-fx-background-color: #1b2a4e; -fx-padding: 15; -fx-border-color: #f45b69; -fx-border-width: 0 0 2 0;">
          <children>
-            <Label styleClass="title" text="ASSISTANT IA" />
+            <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #f45b69;" text="ASSISTANT IA" />
          </children>
       </VBox>
    </top>
    <center>
-      <TextArea fx:id="chatArea" editable="false" style="-fx-control-inner-background: #1a0033; -fx-text-fill: #4dff4d; -fx-font-family: 'Courier New'; -fx-font-size: 14;" wrapText="true" />
+      <TextArea fx:id="chatArea" editable="false" style="-fx-control-inner-background: #0d1b3e; -fx-text-fill: white; -fx-font-family: 'Consolas'; -fx-font-size: 14;" wrapText="true" />
    </center>
    <bottom>
       <HBox spacing="10.0" style="-fx-padding: 15;">

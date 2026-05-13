@@ -1,65 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<BorderPane prefHeight="750.0" prefWidth="1200.0" style="-fx-background-color: #0a1628;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StudentDashboardController">
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StudentDashboardController">
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #2e004d; -fx-padding: 20;">
-         <children>
-            <Label styleClass="title" text="DASHBOARD ÉTUDIANT" />
-            <Label text="Terminez vos leçons pour jouer !" />
-         </children>
+      <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #141e33; -fx-padding: 18 30; -fx-border-color: #101829; -fx-border-width: 0 0 2 0;">
+         <Label style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #f45b69;" text="SkillQuest" />
+         <Label style="-fx-font-size: 14; -fx-text-fill: white; -fx-font-weight: bold;" text="BATTLE ARENA" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Label style="-fx-text-fill: #6b82b5; -fx-font-size: 14;" text="Espace Etudiant" />
+         <Button onAction="#handleLogout" styleClass="btn-primary" style="-fx-font-size: 13; -fx-padding: 7 18; -fx-cursor: hand;" text="Deconnexion" />
       </HBox>
    </top>
+
    <center>
-      <FlowPane alignment="CENTER" hgap="30.0" vgap="30.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER" spacing="15.0" styleClass="card" prefWidth="250.0">
-               <children>
-                  <Label styleClass="title" text="QUIZ" />
-                  <Label text="Répondez aux questions contre la montre !" textAlignment="CENTER" wrapText="true" />
-                  <Button mnemonicParsing="false" onAction="#handlePlayQuiz" styleClass="btn-add" text="JOUER" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" spacing="15.0" styleClass="card" prefWidth="250.0">
-               <children>
-                  <Label styleClass="title" text="CORRECTION CODE" />
-                  <Label text="L'IA a fait des erreurs, corrigez-les vite !" textAlignment="CENTER" wrapText="true" />
-                  <Button mnemonicParsing="false" onAction="#handlePlayCode" styleClass="btn-modify" text="JOUER" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" spacing="15.0" styleClass="card" prefWidth="250.0">
-               <children>
-                  <Label styleClass="title" text="CHATBOT IA" />
-                  <Label text="Besoin d'aide ? Discutez avec notre assistant !" textAlignment="CENTER" wrapText="true" />
-                  <Button mnemonicParsing="false" onAction="#handleOpenChat" styleClass="btn-delete" text="OUVRIR" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" spacing="15.0" styleClass="card" prefWidth="250.0">
-               <children>
-                  <Label styleClass="title" text="BATTLE GAME" />
-                  <Label text="Affrontez le Bot et gagnez des badges !" textAlignment="CENTER" wrapText="true" />
-                  <Button mnemonicParsing="false" onAction="#handlePlayBattle" styleClass="btn-add" text="JOUER" />
-               </children>
-            </VBox>
-            <Button onAction="#handleLogout" prefWidth="300.0" style="-fx-background-color: #ffdb4d; -fx-text-fill: black; -fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 15;" text="⬅ RETOUR AU PORTAIL" />
-         </children>
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
-      </FlowPane>
+      <!-- Vue Categorie (affichee par defaut) -->
+      <VBox fx:id="viewCategories" spacing="30" style="-fx-padding: 40;" alignment="TOP_CENTER">
+         <Label text="CHOISISSEZ UNE CATEGORIE" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;"/>
+         <HBox fx:id="categoriesBox" spacing="40" alignment="CENTER"/>
+      </VBox>
    </center>
+
+   <!-- Vue Liste de Jeux (cachee par defaut) -->
    <bottom>
-      <HBox alignment="CENTER" style="-fx-padding: 20;">
-         <children>
-            <Label text="Cœurs restants: ❤❤❤" style="-fx-font-size: 18; -fx-text-fill: #ff4d4d;" />
-         </children>
-      </HBox>
+      <VBox fx:id="viewGames" visible="false" managed="false" spacing="20" style="-fx-padding: 0 40 40 40;" VBox.vgrow="ALWAYS">
+         <HBox spacing="20" alignment="CENTER_LEFT">
+            <Button fx:id="btnBack" text="RETOUR" onAction="#handleBackToCategories"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #f45b69; -fx-border-radius: 8; -fx-padding: 8 20; -fx-cursor: hand;"/>
+            <Label fx:id="lblCategoryTitle" text="" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;"/>
+         </HBox>
+         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+            <FlowPane fx:id="gamesContainer" hgap="25.0" vgap="25.0" style="-fx-padding: 10;"/>
+         </ScrollPane>
+      </VBox>
    </bottom>
 </BorderPane>

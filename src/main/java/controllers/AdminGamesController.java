@@ -5,30 +5,54 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.scene.input.MouseEvent;
-import services.ServiceGames;
 
+
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
+import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import services.ServiceGames;
+import utils.MailingService;
+
+
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import java.util.List;
 import java.util.Optional;
+
+
 
 public class AdminGamesController {
 
     @FXML private TableView<Games> tableGames;
-    @FXML private TableColumn<Games, Integer> colId;
     @FXML private TableColumn<Games, String> colType;
     @FXML private TableColumn<Games, String> colDifficulty;
     @FXML private TableColumn<Games, Integer> colTime;
     @FXML private TableColumn<Games, Integer> colScore;
+    @FXML private TableColumn<Games, Void> colActions;
 
     @FXML private TextField txtSearchId;
-    @FXML private VBox formPane;
+    @FXML private HBox sidePanel;
+    @FXML private Pane overlay;
     @FXML private Label lblFormTitle;
     @FXML private TextField txtId;
+
     @FXML private TextField txtType;
-    @FXML private TextField txtDifficulty;
+    @FXML private ToggleGroup difficultyGroup;
+    @FXML private RadioButton rbFacile, rbMoyen, rbDifficile;
     @FXML private TextField txtTime;
     @FXML private TextField txtScore;
+    @FXML private TextArea txtDescription;
+    @FXML private Button btnManageQuestions;
     @FXML private Button btnSave;
 
     private ServiceGames serviceGames = new ServiceGames();
@@ -37,23 +61,73 @@ public class AdminGamesController {
 
     @FXML
     public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colType.setCellValueFactory(new PropertyValueFactory<>("typeJeux"));
         colDifficulty.setCellValueFactory(new PropertyValueFactory<>("difficulte"));
         colTime.setCellValueFactory(new PropertyValueFactory<>("timeLimit"));
         colScore.setCellValueFactory(new PropertyValueFactory<>("scoreMax"));
 
-        // Recherche dynamique : écoute les changements dans le champ texte
-        txtSearchId.textProperty().addListener((observable, oldValue, newValue) -> {
-            handleSearch();
+        setupActionsColumn();
+
+        tableGames.setItems(gamesList);
+
+        txtSearchId.textProperty().addListener(new javafx.beans.value.ChangeListener<String>() {
+            @Override
+            public void changed(javafx.beans.value.ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                handleSearch();
+            }
         });
 
         loadGames();
     }
 
+    private void setupActionsColumn() {
+        Callback<TableColumn<Games, Void>, TableCell<Games, Void>> cellFactory = new Callback<TableColumn<Games, Void>, TableCell<Games, Void>>() {
+            @Override
+            public TableCell<Games, Void> call(TableColumn<Games, Void> param) {
+                return new TableCell<Games, Void>() {
+                    private final Button btnEdit = new Button("✎");
+                    private final Button btnDel = new Button("🗑");
+                    private final HBox pane = new HBox(10, btnEdit, btnDel);
+                    {
+                        btnEdit.setStyle("-fx-background-color: #4361ee; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 12; -fx-cursor: hand;");
+                        btnDel.setStyle("-fx-background-color: #e63946; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 12; -fx-cursor: hand;");
+                        btnEdit.setOnAction(new javafx.event.EventHandler<ActionEvent>() {
+                            @Override public void handle(ActionEvent event) {
+                                Games data = getTableView().getItems().get(getIndex());
+                                handleEditAction(data);
+                            }
+                        });
+                        btnDel.setOnAction(new javafx.event.EventHandler<ActionEvent>() {
+                            @Override public void handle(ActionEvent event) {
+                                Games data = getTableView().getItems().get(getIndex());
+                                handleDeleteAction(data);
+                            }
+                        });
+                    }
+                    @Override public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setGraphic(empty ? null : pane);
+                    }
+                };
+            }
+        };
+        colActions.setCellFactory(cellFactory);
+    }
+
     private void loadGames() {
-        gamesList.setAll(serviceGames.getAll());
-        tableGames.setItems(gamesList);
+        List<Games> list = serviceGames.getAll();
+        gamesList.setAll(list);
+    }
+
+    @FXML
+    private void handleSearch() {
+        String idStr = txtSearchId.getText().trim();
+        if (idStr.isEmpty()) {
+            loadGames();
+            return;
+        }
+        List<Games> results = serviceGames.findByType(idStr);
+        gamesList.setAll(results);
     }
 
     @FXML
@@ -61,150 +135,165 @@ public class AdminGamesController {
         isEditMode = false;
         lblFormTitle.setText("Ajouter un Jeu");
         clearForm();
-        txtId.setEditable(false);
-        formPane.setVisible(true);
+        showForm(true);
     }
 
-    @FXML
-    private void handleNavModify() {
-        Games selected = tableGames.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            isEditMode = true;
-            lblFormTitle.setText("Modifier le Jeu");
-            fillForm(selected);
-            txtId.setEditable(false);
-            formPane.setVisible(true);
-        } else {
-            showAlert("Erreur", "Veuillez sélectionner un jeu à modifier.");
-        }
+    private void showForm(boolean show) {
+        sidePanel.setVisible(show);
+        overlay.setVisible(show);
+        btnManageQuestions.setVisible(show && isEditMode);
     }
 
-    @FXML
-    private void handleNavDelete() {
-        Games selected = tableGames.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation de suppression");
-            alert.setHeaderText("Supprimer le jeu ?");
-            alert.setContentText("Êtes-vous sûr de vouloir supprimer le jeu ID: " + selected.getId() + " ?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                serviceGames.supprimer(selected);
-                loadGames();
-                formPane.setVisible(false);
-            }
-        } else {
-            showAlert("Erreur", "Veuillez sélectionner un jeu à supprimer.");
-        }
+    private void handleEditAction(Games selected) {
+        if (selected == null) return;
+        isEditMode = true;
+        lblFormTitle.setText("Modifier le Jeu");
+        fillForm(selected);
+        showForm(true);
     }
 
     @FXML
     private void handleSave() {
         try {
-            String type = txtType.getText();
-            String diff = txtDifficulty.getText();
-            int time = Integer.parseInt(txtTime.getText());
-            int score = Integer.parseInt(txtScore.getText());
+            String type = txtType.getText().trim();
+            RadioButton selectedDiff = (RadioButton) difficultyGroup.getSelectedToggle();
+            String diff = (selectedDiff != null) ? selectedDiff.getText() : null;
+            
+            if (type.isEmpty() || diff == null) {
+                showAlert("Champs Obligatoires", "Veuillez saisir le type et choisir une difficulté.");
+                return;
+            }
+
+            int time, score;
+            try {
+                time = Integer.parseInt(txtTime.getText());
+                score = Integer.parseInt(txtScore.getText());
+            } catch (NumberFormatException e) {
+                showAlert("Erreur Numérique", "Le temps et le score doivent être des nombres entiers.");
+                return;
+            }
+
+            Games g = new Games();
+            g.setTypeJeux(type);
+            g.setDifficulte(diff);
+            g.setTimeLimit(time);
+            g.setScoreMax(score);
+            g.setDescription(txtDescription.getText());
 
             if (isEditMode) {
-                int id = Integer.parseInt(txtId.getText());
-                Games g = new Games(id, type, diff, time, score);
+                g.setId(Integer.parseInt(txtId.getText()));
                 serviceGames.modifier(g);
             } else {
-                Games g = new Games(type, diff, time, score);
                 serviceGames.ajouter(g);
+                
+                // Flux Automatique : Ouverture immédiate de la gestion des questions pour le nouveau jeu
+                txtId.setText(String.valueOf(g.getId()));
+                txtType.setText(g.getTypeJeux());
+                handleManageQuestions();
             }
 
+
+            showForm(false);
             loadGames();
-            formPane.setVisible(false);
-            clearForm();
-            
-            // Notification de succès
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Succès");
-            alert.setHeaderText(null);
-            alert.setContentText(isEditMode ? "Jeu modifié avec succès !" : "Jeu ajouté avec succès !");
-            alert.showAndWait();
-        } catch (NumberFormatException e) {
-            showAlert("Erreur de saisie", "Valeurs numériques invalides : " + e.getMessage());
         } catch (Exception e) {
-            showAlert("Erreur Critique", "Erreur base de données : " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de l'enregistrement.");
         }
     }
 
     @FXML
-    private void handleCancel() {
-        formPane.setVisible(false);
-        clearForm();
-    }
+    private void handleDeleteAction(Games g) {
+        Alert ask = new Alert(Alert.AlertType.CONFIRMATION);
+        ask.setTitle("Confirmation");
+        ask.setHeaderText("Supprimer le jeu : " + g.getTypeJeux() + " ?");
+        ask.setContentText("Cette action est irréversible.");
 
-    @FXML
-    private void handleSearch() {
-        String searchId = txtSearchId.getText();
-        if (!searchId.isEmpty()) {
-            try {
-                int id = Integer.parseInt(searchId);
-                Games g = serviceGames.getById(id);
-                if (g != null) {
-                    tableGames.setItems(FXCollections.observableArrayList(g));
-                } else {
-                    tableGames.setItems(FXCollections.observableArrayList());
-                }
-            } catch (NumberFormatException e) {
-                showAlert("Erreur", "L'ID doit être un nombre.");
-            }
-        } else {
+        Optional<ButtonType> result = ask.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            serviceGames.supprimer(g);
             loadGames();
         }
     }
 
     @FXML
-    private void handleRefresh() {
-        loadGames();
-        txtSearchId.clear();
-    }
+    private void handleCancel() { showForm(false); }
 
     @FXML
     private void handleTableClick(MouseEvent event) {
-        // Optionnel: peut-être remplir le formulaire automatiquement au clic ?
-        Games selected = tableGames.getSelectionModel().getSelectedItem();
-        if (selected != null && event.getClickCount() == 2) {
-             fillForm(selected);
-             formPane.setVisible(true);
+        if (event.getClickCount() == 2) {
+            Games selected = tableGames.getSelectionModel().getSelectedItem();
+            if (selected != null) handleEditAction(selected);
         }
     }
 
-    private void clearForm() {
-        txtId.clear();
-        txtType.clear();
-        txtDifficulty.clear();
-        txtTime.clear();
-        txtScore.clear();
-    }
-
-    private void fillForm(Games g) {
-        txtId.setText(String.valueOf(g.getId()));
-        txtType.setText(g.getTypeJeux());
-        txtDifficulty.setText(g.getDifficulte());
-        txtTime.setText(String.valueOf(g.getTimeLimit()));
-        txtScore.setText(String.valueOf(g.getScoreMax()));
-    }
-
     @FXML
-    private void handleLogout(javafx.event.ActionEvent event) {
+    private void handleManageQuestions() {
         try {
-            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
-            javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setTitle("WORKSHOP - Portail de Connexion");
-            stage.setScene(new javafx.scene.Scene(root, 800, 500));
+            int gameId = Integer.parseInt(txtId.getText());
+            String typeLower = txtType.getText().toLowerCase();
+            
+            String fxmlPath = "/fxml/QuestionManager.fxml";
+            String titleStr = "Gestion des Questions - " + txtType.getText();
+            
+            if (typeLower.contains("code") || typeLower.contains("correction")) {
+                fxmlPath = "/fxml/CodeCorrectionManager.fxml";
+                titleStr = "Gestion des Corrections de Code - " + txtType.getText();
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            Object controller = loader.getController();
+            if (controller instanceof QuestionManagerController) {
+                ((QuestionManagerController) controller).setGameId(gameId);
+            } else if (controller instanceof CodeCorrectionManagerController) {
+                ((CodeCorrectionManagerController) controller).setGameId(gameId);
+            }
+
+            Stage stage = new Stage();
+            stage.setTitle(titleStr);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 800, 500));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fillForm(Games g) {
+        txtId.setText(String.valueOf(g.getId()));
+        txtType.setText(g.getTypeJeux());
+        txtTime.setText(String.valueOf(g.getTimeLimit()));
+        txtScore.setText(String.valueOf(g.getScoreMax()));
+        txtDescription.setText(g.getDescription());
+        
+        if ("Facile".equals(g.getDifficulte())) rbFacile.setSelected(true);
+        else if ("Moyen".equals(g.getDifficulte())) rbMoyen.setSelected(true);
+        else if ("Difficile".equals(g.getDifficulte())) rbDifficile.setSelected(true);
+    }
+
+    private void clearForm() {
+        txtId.clear();
+        txtType.clear();
+        txtTime.clear();
+        txtScore.clear();
+        txtDescription.clear();
+        rbFacile.setSelected(true);
+    }
+
     private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setContentText(content);
         alert.showAndWait();

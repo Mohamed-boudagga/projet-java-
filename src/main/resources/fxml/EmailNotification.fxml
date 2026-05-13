@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="CENTER" prefWidth="450" prefHeight="300" 
+      style="-fx-background-color: #0a1628; -fx-padding: 30; -fx-border-color: #f45b69; -fx-border-width: 2;" 
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.EmailNotificationController">
+    
+    <Label text="📢 NOTIFIER LES ÉTUDIANTS" 
+           style="-fx-text-fill: #f45b69; -fx-font-size: 20; -fx-font-weight: bold;"/>
+    
+    <Separator style="-fx-opacity: 0.3;"/>
+    
+    <VBox spacing="10">
+        <Label text="Email de la Classroom / Étudiant :" style="-fx-text-fill: #8090b0;"/>
+        <TextField fx:id="txtRecipientEmail" promptText="exemple@gmail.com" 
+                   style="-fx-background-color: #141e33; -fx-text-fill: white; -fx-border-color: #2d3f6b; -fx-border-radius: 5;"/>
+    </VBox>
+    
+    <Label fx:id="lblStatus" text="Prêt à envoyer" style="-fx-text-fill: #4a6090; -fx-font-size: 12;"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="IGNORER" onAction="#handleCancel" 
+                style="-fx-background-color: transparent; -fx-text-fill: #8090b0; -fx-border-color: #2d3f6b; -fx-cursor: hand;"/>
+        <Button text="ENVOYER À UN SEUL" onAction="#handleSend" 
+                style="-fx-background-color: #3a86ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 15;"/>
+        <Button text="ENVOYER À TOUTE LA CLASSE 🚀" onAction="#handleNotifyAll" 
+                style="-fx-background-color: #f45b69; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 20;"/>
+    </HBox>
+</VBox>

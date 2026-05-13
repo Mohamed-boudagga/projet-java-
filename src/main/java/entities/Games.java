@@ -6,6 +6,7 @@ public class Games {
     private String difficulte;
     private int timeLimit;
     private int scoreMax;
+    private String description;
 
     public Games() {
     }
@@ -18,11 +19,21 @@ public class Games {
         this.scoreMax = scoreMax;
     }
 
-    public Games(String typeJeux, String difficulte, int timeLimit, int scoreMax) {
+    public Games(int id, String typeJeux, String difficulte, int timeLimit, int scoreMax, String description) {
+        this.id = id;
         this.typeJeux = typeJeux;
         this.difficulte = difficulte;
         this.timeLimit = timeLimit;
         this.scoreMax = scoreMax;
+        this.description = description;
+    }
+
+    public Games(String typeJeux, String difficulte, int timeLimit, int scoreMax, String description) {
+        this.typeJeux = typeJeux;
+        this.difficulte = difficulte;
+        this.timeLimit = timeLimit;
+        this.scoreMax = scoreMax;
+        this.description = description;
     }
 
     public int getId() {
@@ -65,6 +76,14 @@ public class Games {
         this.scoreMax = scoreMax;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Games{" +
@@ -73,6 +92,7 @@ public class Games {
                 ", difficulte='" + difficulte + '\'' +
                 ", timeLimit=" + timeLimit +
                 ", scoreMax=" + scoreMax +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

@@ -7,29 +7,50 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
+import javafx.scene.input.MouseEvent;
 
 public class LoginSelectionController {
 
     @FXML
-    private void handleStudentAccess(ActionEvent event) {
-        openWindow(event, "/fxml/StudentDashboard.fxml", "WORKSHOP - Espace Étudiant");
+    private void handleUserLogin(ActionEvent event) {
+        Object source = event.getSource();
+        if (source instanceof Node) {
+            openWindowFromNode((Node)source, "/fxml/StudentDashboard.fxml", "SkillQuest - Espace Etudiant");
+        }
     }
 
     @FXML
-    private void handleAdminAccess(ActionEvent event) {
-        openWindow(event, "/fxml/AdminGames.fxml", "WORKSHOP - Administration");
+    private void handleAdminLogin(ActionEvent event) {
+        Object source = event.getSource();
+        if (source instanceof Node) {
+            openWindowFromNode((Node)source, "/fxml/AdminGames.fxml", "SkillQuest - Administration");
+        }
     }
 
-    private void openWindow(ActionEvent event, String fxmlPath, String title) {
+    @FXML
+    private void handleCardUserClick(MouseEvent event) {
+        Object source = event.getSource();
+        if (source instanceof Node) {
+            openWindowFromNode((Node)source, "/fxml/StudentDashboard.fxml", "SkillQuest - Espace Etudiant");
+        }
+    }
+
+    @FXML
+    private void handleCardAdminClick(MouseEvent event) {
+        Object source = event.getSource();
+        if (source instanceof Node) {
+            openWindowFromNode((Node)source, "/fxml/AdminGames.fxml", "SkillQuest - Administration");
+        }
+    }
+
+    private void openWindowFromNode(Node node, String fxmlPath, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
             stage.show();
-            
-            // Fermer la fenêtre de sélection
-            ((Node)(event.getSource())).getScene().getWindow().hide();
+            node.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
