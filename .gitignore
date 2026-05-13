@@ -2,7 +2,10 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+<<<<<<< HEAD
 .kotlin
+=======
+>>>>>>> b4c9e27997fb144b40ee765e4c8448734eccd960
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -12,6 +15,10 @@ target/
 *.iws
 *.iml
 *.ipr
+<<<<<<< HEAD
+=======
+.idea/
+>>>>>>> b4c9e27997fb144b40ee765e4c8448734eccd960
 
 ### Eclipse ###
 .apt_generated

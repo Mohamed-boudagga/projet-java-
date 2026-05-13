@@ -269,7 +269,7 @@ public class StudentDashboardController {
         } else if (type.contains("battle")) {
             openWindow("/fxml/BattleGame.fxml", "Battle Arena", g);
         } else {
-            openWindow("/fxml/Quiz.fxml", "Quiz", g);
+            openWindow("/fxml/SkillQuestQuiz.fxml", "Quiz", g);
         }
     }
 
@@ -295,8 +295,8 @@ public class StudentDashboardController {
             Parent root = loader.load();
             Object ctrl = loader.getController();
             if (config != null) {
-                if (ctrl instanceof QuizController) {
-                    ((QuizController) ctrl).setGameConfig(config);
+                if (ctrl instanceof SkillQuestQuizController) {
+                    ((SkillQuestQuizController) ctrl).setGameConfig(config);
                 } else if (ctrl instanceof CodeCorrectionController) {
                     ((CodeCorrectionController) ctrl).setGameConfig(config);
                 }
