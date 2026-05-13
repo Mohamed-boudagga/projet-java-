@@ -1,108 +1,93 @@
-<<<<<<< HEAD
-import models.Etudiant;
-import services.ServiceEtudiant;
+package main;
+
+import models.*;
+import services.*;
 import utils.MyDataBase;
+import utils.PasswordUtils;
 
-import java.sql.Statement;
 import java.sql.SQLException;
-=======
-import models.Certification;
-import models.Exam;
-import services.ServiceCertification;
-import services.ServiceExam;
-
+import java.sql.Statement;
 import java.util.Date;
->>>>>>> origin/gestion-test/certif
 
 public class Main {
 
     public static void main(String[] args) {
 
-<<<<<<< HEAD
-        System.out.println("============================================");
-        System.out.println("   SkillQuest — Module Gestion Etudiants   ");
-        System.out.println("============================================");
+        banner("SkillQuest v2 — Module Integration");
 
         if (!MyDataBase.getInstance().isConnected()) {
-            System.err.println(" Impossible de continuer sans connexion a la base de donnees.");
+            System.err.println("Impossible de continuer sans connexion à la base de données.");
             return;
         }
 
-
+        // Nettoyage des tables pour un test propre
         try {
             Statement stmt = MyDataBase.getInstance().getCnx().createStatement();
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=0");
+            stmt.executeUpdate("TRUNCATE TABLE cours");
             stmt.executeUpdate("TRUNCATE TABLE etudiant");
-            System.out.println(" Base de donnees reinitialisee pour le test.");
+            stmt.executeUpdate("TRUNCATE TABLE admin");
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=1");
+            System.out.println("✔ Tables réinitialisées.\n");
         } catch (SQLException e) {
-            System.out.println("Erreur de nettoyage : " + e.getMessage());
+            System.out.println("Erreur nettoyage : " + e.getMessage());
         }
 
-        ServiceEtudiant service = new ServiceEtudiant();
+        // MODULE ADMIN
+        banner("MODULE ADMIN");
+        ServiceAdmin serviceAdmin = new ServiceAdmin();
+        serviceAdmin.add(new Admin("Admin", "Principal", "admin@skillquest.tn", "admin123"));
+        serviceAdmin.add(new Admin("Directeur", "Sami", "sami@skillquest.tn", "sami2024"));
+        System.out.println("\n--- Tous les admins ---");
+        serviceAdmin.getAll().forEach(System.out::println);
 
-        // ADD
-        System.out.println("\n===== ADD =====");
-        service.add(new Etudiant("Ben Ali",  "Ahmed",  "ahmed.benali@esprit.tn",  "pass1*2*3*", 1,   0, false));
-        service.add(new Etudiant("Trabelsi", "Sarra",    "sarra@esprit.tn",           "pass4*5*6*", 2, 150, false));
-        service.add(new Etudiant("Mansouri", "Jihed",    "jihed@esprit.tn",           "pass7*8*9*", 3, 500, true));
-        service.add(new Etudiant("briki",    "oussama",  "oussama@esprit.tn",         "pass1*2*3*44", 1,   0, false));
-        service.add(new Etudiant("Boudagga",  "Mohamed",  "Mohamed.Boudagga@esprit.tn",  "pass12345678", 5,   1000, true));
-        //  GET ALL
-        System.out.println("\n===== GET ALL =====");
-        service.getAll().forEach(System.out::println);
+        // MODULE ETUDIANT
+        banner("MODULE ETUDIANT");
+        ServiceEtudiant serviceEtudiant = new ServiceEtudiant();
+        serviceEtudiant.add(new Etudiant("Ben Ali", "Ahmed", "ahmed@esprit.tn", "pass123", 1, 0, false, "20123456", "M"));
+        serviceEtudiant.add(new Etudiant("Trabelsi", "Sarra", "sarra@esprit.tn", "pass456", 2, 150, false, "22334455", "F"));
+        serviceEtudiant.add(new Etudiant("Boudagga", "Mohamed", "mohamed@esprit.tn", "pass12345678", 5, 1000, true, "27182818", "M"));
+        System.out.println("\n--- Tous les étudiants ---");
+        serviceEtudiant.getAll().forEach(System.out::println);
 
-        // GET BY ID
-        System.out.println("\n===== GET BY ID (id=1) =====");
-        Etudiant trouve = service.getById(1);
-        System.out.println(trouve);
+        // MODULE COURS
+        banner("MODULE COURS");
+        ServiceCours serviceCours = new ServiceCours();
+        Admin admin = serviceAdmin.getByEmail("admin@skillquest.tn");
+        int adminId = admin != null ? admin.getId() : 1;
+        serviceCours.add(new Cours("Java Débutant", "Introduction à Java.", 1, adminId));
+        serviceCours.add(new Cours("Base de Données SQL", "Requêtes SQL avec MySQL.", 2, adminId));
+        System.out.println("\n--- Tous les cours ---");
+        serviceCours.getAll().forEach(System.out::println);
 
-        //  UPDATE
-        System.out.println("\n===== UPDATE =====");
-        if (trouve != null) {
-            trouve.setPoints(300);
-            trouve.setNiveau(2);
-            service.update(trouve);
-        }
-
-        // GET ALL apres UPDATE
-        System.out.println("\n===== GET ALL apres UPDATE =====");
-        service.getAll().forEach(System.out::println);
-
-        // DELETE
-
-        System.out.println("\n===== DELETE (id=1) =====");
-        if (trouve != null) service.delete(trouve);
-        
-        System.out.println("\n===== GET ALL apres DELETE =====");
-        service.getAll().forEach(System.out::println);
-
-
-        System.out.println("\n=========================================");
-        System.out.println("   Test CRUD termine avec succes !         ");
-        System.out.println("   Vérifiez phpMyAdmin, les données sont là !");
-        System.out.println("===========================================");
-=======
-        // --- NETTOYAGE ET INSERTION DE DONNÉES DE TEST POUR LE NIVEAU 1 ---
+        // MODULE TESTS / CERTIF (Other members work)
+        banner("MODULE TESTS / CERTIF");
         ServiceExam se = new ServiceExam();
         ServiceCertification sc = new ServiceCertification();
 
-        // 1. Création d'un Examen pour le Niveau 1
         Exam eTest = new Exam();
         eTest.setNom("Java Mastery Exam");
         eTest.setLevel(1);
         eTest.setDureeMinutes(45);
         se.add(eTest);
 
-        // 2. Création de la Certification pour le Niveau 1
         Certification cTest = new Certification();
         cTest.setTitle("Oracle Certified Associate");
         cTest.setLevel(1);
-        cTest.setDescription("Expert en programmation Java Orientée Objet et bases du langage. Félicitations pour ce succès remarquable !");
+        cTest.setDescription("Expert en programmation Java.");
         cTest.setDateObtention(new Date());
         sc.add(cTest);
 
-        System.out.println("Données de test ajoutées avec succès pour le Niveau 1 !");
         System.out.println("Vérification Exams : " + se.getAll());
         System.out.println("Vérification Certifs : " + sc.getAll());
->>>>>>> origin/gestion-test/certif
+
+        banner("Tous les tests d'intégration terminés avec succès !");
+    }
+
+    private static void banner(String title) {
+        String line = "=".repeat(55);
+        System.out.println("\n" + line);
+        System.out.printf("  %s%n", title);
+        System.out.println(line);
     }
 }
