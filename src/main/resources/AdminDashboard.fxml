@@ -21,7 +21,7 @@
                     <children>
                         <!-- Gestion Examens -->
                         <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#ouvrirGestionExam" 
-                              style="-fx-background-color: #1a1a4a; -fx-border-color: #27ae60; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="250">
+                              style="-fx-background-color: #1a1a4a; -fx-border-color: #27ae60; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
                             <children>
                                 <Label text="📝" style="-fx-font-size: 40;" />
                                 <Label text="GESTION EXAMENS" style="-fx-text-fill: white; -fx-font-weight: bold;" />
@@ -30,10 +30,19 @@
                         
                         <!-- Gestion Certifications -->
                         <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#ouvrirGestionCert" 
-                              GridPane.columnIndex="1" style="-fx-background-color: #1a1a4a; -fx-border-color: #e67e22; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="250">
+                              GridPane.columnIndex="1" style="-fx-background-color: #1a1a4a; -fx-border-color: #e67e22; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
                             <children>
                                 <Label text="📜" style="-fx-font-size: 40;" />
                                 <Label text="GESTION CERTIFICATIONS" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            </children>
+                        </VBox>
+
+                        <!-- Gestion SkillQuest Games (VOTRE TRAVAIL) -->
+                        <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#handleGoToGamesFromMouse" 
+                              GridPane.columnIndex="2" style="-fx-background-color: #1a1a4a; -fx-border-color: #f45b69; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
+                            <children>
+                                <Label text="🎮" style="-fx-font-size: 40;" />
+                                <Label text="GESTION JEUX SKILLQUEST" style="-fx-text-fill: white; -fx-font-weight: bold;" />
                             </children>
                         </VBox>
                     </children>

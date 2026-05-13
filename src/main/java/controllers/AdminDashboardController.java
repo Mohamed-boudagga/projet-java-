@@ -16,23 +16,20 @@ public class AdminDashboardController {
     
     @FXML
     private void handleGoToGames(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/AdminGames.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle("SkillQuest - Gestion des Jeux");
-            stage.setScene(new Scene(root, 1200, 800));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        openGamesView((Node) event.getSource());
     }
 
     @FXML
-    private void handleLogout(ActionEvent event) {
+    private void handleGoToGamesFromMouse(MouseEvent event) {
+        openGamesView((Node) event.getSource());
+    }
+
+    private void openGamesView(Node source) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle("SkillQuest - Portail de Connexion");
-            stage.setScene(new Scene(root, 800, 500));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/AdminGames.fxml"));
+            Stage stage = (Stage) source.getScene().getWindow();
+            stage.setTitle("SkillQuest - Gestion des Jeux");
+            stage.setScene(new Scene(root, 1200, 800));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,9 +61,19 @@ public class AdminDashboardController {
 
     @FXML
     public void ouvrirVueEtudiant(ActionEvent event) {
-        // Supposé lié au contrôleur de Mohamed
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/SelectionNiveau.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void deconnexion(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {

@@ -142,6 +142,13 @@ public class QuestionManagerController {
         if (!emails.isEmpty() && g != null) {
             System.out.println("🚀 Notification automatique en cours pour " + emails.size() + " étudiants...");
             MailingService.sendBulkNotification(emails, g);
+
+            // --- ALERTE DE CONFIRMATION VISUELLE ---
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Notification Envoyée");
+            alert.setHeaderText(null);
+            alert.setContentText("🚀 Les " + emails.size() + " étudiants ont été notifiés par e-mail.");
+            alert.showAndWait();
         }
 
         // 4. Fermer la fenêtre de gestion

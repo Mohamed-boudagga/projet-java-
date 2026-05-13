@@ -10,12 +10,12 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Commencer par le portail de sélection au lieu du dashboard direct
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
-        primaryStage.setTitle("SkillQuest - Portail de Connexion");
+        // On démarre sur le Login de Mohamed pour l'intégration
+        Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
+        primaryStage.setTitle("SkillQuest - Connexion");
 
-        primaryStage.setScene(new Scene(root, 800, 500));
-        primaryStage.setResizable(false);
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
