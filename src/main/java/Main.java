@@ -1,14 +1,24 @@
+<<<<<<< HEAD
 import models.Etudiant;
 import services.ServiceEtudiant;
 import utils.MyDataBase;
 
 import java.sql.Statement;
 import java.sql.SQLException;
+=======
+import models.Certification;
+import models.Exam;
+import services.ServiceCertification;
+import services.ServiceExam;
+
+import java.util.Date;
+>>>>>>> origin/gestion-test/certif
 
 public class Main {
 
     public static void main(String[] args) {
 
+<<<<<<< HEAD
         System.out.println("============================================");
         System.out.println("   SkillQuest — Module Gestion Etudiants   ");
         System.out.println("============================================");
@@ -70,5 +80,29 @@ public class Main {
         System.out.println("   Test CRUD termine avec succes !         ");
         System.out.println("   Vérifiez phpMyAdmin, les données sont là !");
         System.out.println("===========================================");
+=======
+        // --- NETTOYAGE ET INSERTION DE DONNÉES DE TEST POUR LE NIVEAU 1 ---
+        ServiceExam se = new ServiceExam();
+        ServiceCertification sc = new ServiceCertification();
+
+        // 1. Création d'un Examen pour le Niveau 1
+        Exam eTest = new Exam();
+        eTest.setNom("Java Mastery Exam");
+        eTest.setLevel(1);
+        eTest.setDureeMinutes(45);
+        se.add(eTest);
+
+        // 2. Création de la Certification pour le Niveau 1
+        Certification cTest = new Certification();
+        cTest.setTitle("Oracle Certified Associate");
+        cTest.setLevel(1);
+        cTest.setDescription("Expert en programmation Java Orientée Objet et bases du langage. Félicitations pour ce succès remarquable !");
+        cTest.setDateObtention(new Date());
+        sc.add(cTest);
+
+        System.out.println("Données de test ajoutées avec succès pour le Niveau 1 !");
+        System.out.println("Vérification Exams : " + se.getAll());
+        System.out.println("Vérification Certifs : " + sc.getAll());
+>>>>>>> origin/gestion-test/certif
     }
 }
