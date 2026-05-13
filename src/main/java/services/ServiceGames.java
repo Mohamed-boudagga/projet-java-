@@ -1,6 +1,7 @@
 package services;
 
 import entities.Games;
+import interfaces.IService;
 import tools.Mydb;
 
 import java.sql.Connection;
@@ -18,7 +19,7 @@ public class ServiceGames implements IService<Games> {
     }
 
     @Override
-    public void ajouter(Games g) {
+    public void add(Games g) {
         Connection connection = getConnection();
         if (connection == null) {
             throw new RuntimeException("Connexion à la base de données impossible.");
@@ -43,7 +44,7 @@ public class ServiceGames implements IService<Games> {
     }
 
     @Override
-    public void modifier(Games g) {
+    public void update(Games g) {
         Connection connection = getConnection();
         if (connection == null) {
             throw new RuntimeException("Connexion à la base de données impossible.");
@@ -64,7 +65,7 @@ public class ServiceGames implements IService<Games> {
     }
 
     @Override
-    public void supprimer(Games g) {
+    public void delete(Games g) {
         Connection connection = getConnection();
         if (connection == null) {
             throw new RuntimeException("Connexion à la base de données impossible.");

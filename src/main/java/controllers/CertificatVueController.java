@@ -51,10 +51,10 @@ public class CertificatVueController {
 
             if (isLevelFinished) {
                 // Retour au menu principal des niveaux
-                root = FXMLLoader.load(getClass().getResource("/SelectionNiveau.fxml"));
+                root = FXMLLoader.load(getClass().getResource("/fxml/SelectionNiveau.fxml"));
             } else {
                 // Retour à la liste des examens du niveau actuel pour continuer
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeExamensNiveau.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListeExamensNiveau.fxml"));
                 root = loader.load();
                 ListeExamensNiveauController controller = loader.getController();
                 controller.setNiveau(level);

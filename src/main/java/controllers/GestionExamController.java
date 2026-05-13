@@ -160,7 +160,7 @@ public class GestionExamController {
     public void ouvrirGererQuestions(ActionEvent event) {
         if (selectedId == -1) return;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionQuestions.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GestionQuestions.fxml"));
             Parent root = loader.load();
             
             GestionQuestionsController controller = loader.getController();
@@ -191,7 +191,7 @@ public class GestionExamController {
     @FXML
     public void retourSelection(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/AdminDashboard.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/AdminDashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

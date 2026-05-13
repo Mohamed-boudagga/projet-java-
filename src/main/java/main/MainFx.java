@@ -10,12 +10,11 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // On démarre sur le Login de Mohamed pour l'intégration
-        Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
-        primaryStage.setTitle("SkillQuest - Connexion");
-
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(true);
+        // Point d'entrée original : portail de sélection (contient connexion Google)
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
+        primaryStage.setTitle("SkillQuest - Portail de Connexion");
+        primaryStage.setScene(new Scene(root, 900, 600));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

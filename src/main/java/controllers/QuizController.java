@@ -145,7 +145,7 @@ public class QuizController {
 
     private void retourMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ListeExamensNiveau.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ListeExamensNiveau.fxml"));
             Stage stage = (Stage) lbQuestion.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

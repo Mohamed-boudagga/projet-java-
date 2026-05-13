@@ -208,7 +208,7 @@ public class EtudiantController implements Initializable {
         colCoursTitre.setCellValueFactory(new PropertyValueFactory<>("titreCours"));
         colCoursStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
 
-        colCoursProgression.setCellFactory(column -> new TableCell<>() {
+        colCoursProgression.setCellFactory(column -> new TableCell<ProgressionCours, Integer>() {
             private final ProgressBar pb = new ProgressBar();
             { pb.setPrefWidth(100); pb.setStyle("-fx-accent: #27ae60;"); }
             @Override protected void updateItem(Integer progress, boolean empty) {
@@ -220,7 +220,7 @@ public class EtudiantController implements Initializable {
             }
         });
 
-        colCoursActions.setCellFactory(column -> new TableCell<>() {
+        colCoursActions.setCellFactory(column -> new TableCell<ProgressionCours, Void>() {
             private final Button btn = new Button("Continuer ▶");
             {
                 btn.setStyle("-fx-background-color:#e94560; -fx-text-fill:white; -fx-background-radius:5; -fx-cursor:hand;");
@@ -235,7 +235,7 @@ public class EtudiantController implements Initializable {
         // Table Tests
         colTestTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
         colTestScoreMin.setCellValueFactory(new PropertyValueFactory<>("scoreMin"));
-        colTestActions.setCellFactory(column -> new TableCell<>() {
+        colTestActions.setCellFactory(column -> new TableCell<Test, Void>() {
             private final Button btn = new Button("Lancer ▶");
             {
                 btn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius:5; -fx-cursor:hand;");
@@ -248,7 +248,7 @@ public class EtudiantController implements Initializable {
         });
 
         // Table Classement
-        colRang.setCellFactory(column -> new TableCell<>() {
+        colRang.setCellFactory(column -> new TableCell<Etudiant, Integer>() {
             @Override protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) { setText(null); return; }

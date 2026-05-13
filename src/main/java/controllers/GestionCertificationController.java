@@ -202,7 +202,7 @@ public class GestionCertificationController {
     @FXML
     public void retourSelection(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/AdminDashboard.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/AdminDashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

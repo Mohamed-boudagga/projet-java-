@@ -103,4 +103,27 @@ public class ServiceQuestion implements IService<Question> {
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public Question getById(int id) {
+        String req = "SELECT * FROM `question` WHERE `id` = ?";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Question q = new Question();
+                q.setId(rs.getInt("id"));
+                q.setExamId(rs.getInt("exam_id"));
+                q.setText(rs.getString("text"));
+                q.setOptions(Arrays.asList(rs.getString("options").split(";")));
+                q.setCorrectOptionIndex(rs.getInt("correct_option_index"));
+                q.setPoints(rs.getInt("points"));
+                return q;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

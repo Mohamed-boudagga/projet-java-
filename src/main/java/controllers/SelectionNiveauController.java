@@ -126,7 +126,7 @@ public class SelectionNiveauController {
 
     private void ouvrirListeExamens(int level, Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeExamensNiveau.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListeExamensNiveau.fxml"));
             Parent root = loader.load();
             
             ListeExamensNiveauController controller = loader.getController();
@@ -141,7 +141,7 @@ public class SelectionNiveauController {
 
     private void ouvrirGestionExam(int level, Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionExam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GestionExam.fxml"));
             Parent root = loader.load();
             GestionExamController controller = loader.getController();
             controller.setInitialLevel(level);
@@ -154,7 +154,7 @@ public class SelectionNiveauController {
 
     private void ouvrirGestionCertification(int level, Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionCertification.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GestionCertification.fxml"));
             Parent root = loader.load();
             GestionCertificationController controller = loader.getController();
             controller.setInitialLevel(level);
@@ -168,7 +168,7 @@ public class SelectionNiveauController {
     @FXML
     public void retourLogin(javafx.event.ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

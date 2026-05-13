@@ -57,7 +57,7 @@ public class PasserExamenController {
                 matchingCert.setLevel(currentExam.getLevel());
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CertificatVue.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CertificatVue.fxml"));
             Parent root = loader.load();
             
             CertificatVueController controller = loader.getController();

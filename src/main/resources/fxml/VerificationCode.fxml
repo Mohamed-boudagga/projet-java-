@@ -22,6 +22,9 @@
                 
                 <Label fx:id="lbError" text="" style="-fx-text-fill: #e94560;" />
 
+                <Button text="Accéder au Quiz Google" onAction="#ouvrirGoogleQuiz" 
+                        style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand;" />
+
                 <HBox spacing="10.0" alignment="CENTER">
                     <Button text="VÉRIFIER" onAction="#verifierCode" 
                             style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" />

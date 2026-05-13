@@ -57,36 +57,6 @@ public class ServiceEtudiant implements IService<Etudiant> {
     }
 
     // ----------------------------------------------------------------
-    // VERIFIER UNICITE EMAIL
-    // ----------------------------------------------------------------
-    public boolean emailExiste(String email) {
-        String req = "SELECT COUNT(*) FROM `etudiant` WHERE `email` = ?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1) > 0;
-        } catch (SQLException ex) {
-            System.out.println("✘ Erreur emailExiste : " + ex.getMessage());
-        }
-        return false;
-    }
-
-    public boolean emailExistePourAutre(String email, int excludeId) {
-        String req = "SELECT COUNT(*) FROM `etudiant` WHERE `email` = ? AND `id` != ?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
-            ps.setString(1, email);
-            ps.setInt(2, excludeId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1) > 0;
-        } catch (SQLException ex) {
-            System.out.println("✘ Erreur emailExistePourAutre : " + ex.getMessage());
-        }
-        return false;
-    }
-
-    // ----------------------------------------------------------------
     // GET ALL
     // ----------------------------------------------------------------
     @Override
@@ -136,6 +106,45 @@ public class ServiceEtudiant implements IService<Etudiant> {
             System.out.println("✘ Erreur getByEmail : " + ex.getMessage());
         }
         return null;
+    }
+
+    // ----------------------------------------------------------------
+    // CHECK EMAIL EXISTENCE
+    // ----------------------------------------------------------------
+    public boolean emailExiste(String email) {
+        return getByEmail(email) != null;
+    }
+
+    public boolean emailExistePourAutre(String email, int id) {
+        String req = "SELECT * FROM `etudiant` WHERE `email` = ? AND `id` != ?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, email);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            System.out.println("✘ Erreur emailExistePourAutre : " + ex.getMessage());
+        }
+        return false;
+    }
+
+    // ----------------------------------------------------------------
+    // GET CLASSEMENT
+    // ----------------------------------------------------------------
+    public List<Etudiant> getClassement() {
+        List<Etudiant> list = new ArrayList<>();
+        String req = "SELECT * FROM `etudiant` ORDER BY `points` DESC LIMIT 50";
+        try {
+            Statement stm = cnx.createStatement();
+            ResultSet rs  = stm.executeQuery(req);
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (SQLException ex) {
+            System.out.println("✘ Erreur getClassement : " + ex.getMessage());
+        }
+        return list;
     }
 
     // ----------------------------------------------------------------
@@ -240,24 +249,6 @@ public class ServiceEtudiant implements IService<Etudiant> {
         } catch (SQLException ex) {
             System.out.println("✘ Erreur setBloque : " + ex.getMessage());
         }
-    }
-
-    // ----------------------------------------------------------------
-    // Méthode utilitaire de mapping ResultSet -> Etudiant
-    // ----------------------------------------------------------------
-    public List<Etudiant> getClassement() {
-        List<Etudiant> list = new ArrayList<>();
-        String req = "SELECT * FROM `etudiant` ORDER BY `points` DESC LIMIT 50";
-        try {
-            Statement stm = cnx.createStatement();
-            ResultSet rs  = stm.executeQuery(req);
-            while (rs.next()) {
-                list.add(mapRow(rs));
-            }
-        } catch (SQLException ex) {
-            System.out.println("✘ Erreur getClassement : " + ex.getMessage());
-        }
-        return list;
     }
 
     private Etudiant mapRow(ResultSet rs) throws SQLException {

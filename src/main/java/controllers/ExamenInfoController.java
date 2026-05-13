@@ -33,7 +33,7 @@ public class ExamenInfoController {
     @FXML
     public void startExam(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Quiz.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Quiz.fxml"));
             Parent root = loader.load();
             
             QuizController controller = loader.getController();
@@ -50,7 +50,7 @@ public class ExamenInfoController {
     @FXML
     public void cancel(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeExamensNiveau.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListeExamensNiveau.fxml"));
             Parent root = loader.load();
             
             ListeExamensNiveauController controller = loader.getController();

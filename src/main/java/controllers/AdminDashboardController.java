@@ -40,7 +40,7 @@ public class AdminDashboardController {
     @FXML
     public void ouvrirGestionExam(MouseEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GestionExam.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/GestionExam.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class AdminDashboardController {
     @FXML
     public void ouvrirGestionCert(MouseEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GestionCertification.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/GestionCertification.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class AdminDashboardController {
     @FXML
     public void ouvrirVueEtudiant(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SelectionNiveau.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SelectionNiveau.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class AdminDashboardController {
     @FXML
     public void deconnexion(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {

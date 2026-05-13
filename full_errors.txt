@@ -1,0 +1,2 @@
+Note: C:\Users\Utilisateur\Documents\Workshop\src\main\java\controllers\VerificationCodeController.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.

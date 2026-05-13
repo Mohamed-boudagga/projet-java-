@@ -38,7 +38,7 @@ public class InscrireCoursController implements Initializable {
         colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
         colNiveau.setCellValueFactory(new PropertyValueFactory<>("niveau"));
 
-        colAction.setCellFactory(column -> new TableCell<>() {
+        colAction.setCellFactory(column -> new TableCell<Cours, Void>() {
             private final Button btn = new Button("S'inscrire");
             {
                 btn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius:5; -fx-cursor:hand;");

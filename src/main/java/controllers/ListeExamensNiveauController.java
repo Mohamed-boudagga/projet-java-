@@ -87,7 +87,7 @@ public class ListeExamensNiveauController {
 
     private void ouvrirExamenInfo(Exam exam, Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ExamenInfo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExamenInfo.fxml"));
             Parent root = loader.load();
             ExamenInfoController controller = loader.getController();
             controller.setExam(exam);
@@ -100,7 +100,7 @@ public class ListeExamensNiveauController {
     @FXML
     public void retourMenu(javafx.event.ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SelectionNiveau.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SelectionNiveau.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {

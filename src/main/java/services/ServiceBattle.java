@@ -1,6 +1,7 @@
 package services;
 
 import entities.Battle;
+import interfaces.IService;
 import tools.Mydb;
 
 import java.sql.*;
@@ -77,7 +78,7 @@ public class ServiceBattle implements IService<Battle> {
     // --- Méthodes Obligatoires d'IService (pour corriger le Build) ---
 
     @Override
-    public void ajouter(Battle b) {
+    public void add(Battle b) {
         try {
             String sql = "INSERT INTO battle(battle_type, status, start_time, end_time, gagnant) VALUES (?,?,?,?,?)";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -93,7 +94,7 @@ public class ServiceBattle implements IService<Battle> {
     }
 
     @Override
-    public void modifier(Battle b) {
+    public void update(Battle b) {
         try {
             String sql = "UPDATE battle SET battle_type=?, status=?, gagnant=? WHERE id=?";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -108,7 +109,7 @@ public class ServiceBattle implements IService<Battle> {
     }
 
     @Override
-    public void supprimer(Battle b) {
+    public void delete(Battle b) {
         try {
             String sql = "DELETE FROM battle WHERE id=?";
             PreparedStatement ps = connection.prepareStatement(sql);

@@ -13,24 +13,25 @@ public class Mydb {
     private static Mydb instance;
     private Connection connection;
 
-    private final String url = "jdbc:mysql://localhost:3306/workshop";
+    private final String url = "jdbc:mysql://localhost:3306/skillquest";
     private final String user = "root";
     private final String pass = "";
 
     private Mydb() {
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
             // 1. Connexion au serveur MySQL sans spécifier de DB
             String serverUrl = "jdbc:mysql://localhost:3306/";
             Connection serverConn = DriverManager.getConnection(serverUrl, user, pass);
             
             // 2. Création de la base de données si elle n'existe pas
             Statement st = serverConn.createStatement();
-            st.executeUpdate("CREATE DATABASE IF NOT EXISTS workshop");
+            st.executeUpdate("CREATE DATABASE IF NOT EXISTS skillquest");
             serverConn.close();
             
-            // 3. Connexion à la base de données 'workshop'
+            // 3. Connexion à la base de données 'skillquest'
             connection = DriverManager.getConnection(url, user, pass);
-            System.out.println("Connecté à MySQL (workshop) !");
+            System.out.println("Connecté à MySQL (SkillQuest/Mydb) !");
             creerTables();
         } catch (Exception e) {
             System.err.println("ERREUR CONNEXION DB : " + e.getMessage());

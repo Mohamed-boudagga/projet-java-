@@ -1,88 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.AdminController"
-            prefWidth="1100" prefHeight="700"
-            style="-fx-background-color:#1a1a2e;">
-
-    <!-- ===== BARRE LATERALE ===== -->
-    <left>
-        <VBox spacing="5" prefWidth="220"
-              style="-fx-background-color:#16213e; -fx-padding:20;">
-
-            <Label text="SkillQuest"
-                   style="-fx-font-size:24px; -fx-font-weight:bold;
-                          -fx-text-fill:#f45b69; -fx-padding:0 0 20 0;"/>
-            <Label text="PANNEAU ADMIN"
-                   style="-fx-font-size:11px; -fx-text-fill:#a8a8b3; -fx-padding:0 0 20 10;"/>
-
-            <Button fx:id="btnEtudiants" text="👥  Étudiants"
-                    onAction="#afficherEtudiants"
-                    maxWidth="Infinity"
-                    style="-fx-background-color:#f45b69; -fx-text-fill:white;
-                           -fx-font-size:14px; -fx-background-radius:6; -fx-padding:12;
-                           -fx-cursor:hand; -fx-alignment:CENTER-LEFT;"/>
-
-            <Button fx:id="btnExamens" text="📝  Examens &amp; Certifs"
-                    onAction="#handleGoToExams"
-                    maxWidth="Infinity"
-                    style="-fx-background-color:transparent; -fx-text-fill:#a8a8b3;
-                           -fx-font-size:14px; -fx-background-radius:6; -fx-padding:12;
-                           -fx-cursor:hand; -fx-alignment:CENTER-LEFT;"/>
-
-            <Button fx:id="btnJeux" text="🎮  Jeux SkillQuest"
-                    onAction="#handleGoToGames"
-                    maxWidth="Infinity"
-                    style="-fx-background-color:transparent; -fx-text-fill:#a8a8b3;
-                           -fx-font-size:14px; -fx-background-radius:6; -fx-padding:12;
-                           -fx-cursor:hand; -fx-alignment:CENTER-LEFT;"/>
-
-            <Region VBox.vgrow="ALWAYS"/>
-
-            <Button text="🚪  Déconnexion"
-                    onAction="#handleLogout"
-                    maxWidth="Infinity"
-                    style="-fx-background-color:transparent; -fx-text-fill:#f45b69;
-                           -fx-font-size:13px; -fx-border-color:#f45b69;
-                           -fx-border-radius:6; -fx-background-radius:6;
-                           -fx-padding:10; -fx-cursor:hand;"/>
-        </VBox>
-    </left>
-
-    <!-- ===== CONTENU PRINCIPAL ===== -->
-    <center>
-        <StackPane fx:id="contentArea" style="-fx-padding:25;">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" 
+            fx:controller="controllers.AdminDashboardController" style="-fx-background-color: #0d0d2b;">
+    <children>
+        <VBox alignment="CENTER" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <!-- Vue par défaut (Étudiants) -->
-                <VBox fx:id="viewEtudiants" spacing="15">
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <Label text="Gestion des Étudiants"
-                               style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:white;"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="+ Ajouter Étudiant"
-                                onAction="#handleAjouterEtudiant"
-                                style="-fx-background-color:#f45b69; -fx-text-fill:white;
-                                       -fx-font-size:13px; -fx-background-radius:6;
-                                       -fx-padding:10 20; -fx-cursor:hand;"/>
-                    </HBox>
+                <Label text="TABLEAU DE BORD ADMINISTRATEUR" style="-fx-text-fill: #00ffff; -fx-font-size: 28; -fx-font-weight: bold;" />
+                
+                <GridPane alignment="CENTER" hgap="30.0" vgap="30.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" />
+                        <ColumnConstraints halignment="CENTER" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints valignment="CENTER" />
+                    </rowConstraints>
+                    <children>
+                        <!-- Gestion Examens -->
+                        <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#ouvrirGestionExam" 
+                              style="-fx-background-color: #1a1a4a; -fx-border-color: #27ae60; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
+                            <children>
+                                <Label text="📝" style="-fx-font-size: 40;" />
+                                <Label text="GESTION EXAMENS" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            </children>
+                        </VBox>
+                        
+                        <!-- Gestion Certifications -->
+                        <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#ouvrirGestionCert" 
+                              GridPane.columnIndex="1" style="-fx-background-color: #1a1a4a; -fx-border-color: #e67e22; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
+                            <children>
+                                <Label text="📜" style="-fx-font-size: 40;" />
+                                <Label text="GESTION CERTIFICATIONS" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            </children>
+                        </VBox>
 
-                    <TableView fx:id="tableEtudiants" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="colNom" text="Nom" prefWidth="150"/>
-                            <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="150"/>
-                            <TableColumn fx:id="colEmail" text="Email" prefWidth="250"/>
-                            <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="100"/>
-                            <TableColumn fx:id="colPoints" text="Points" prefWidth="100"/>
-                        </columns>
-                    </TableView>
-                </VBox>
+                        <!-- Gestion SkillQuest Games (VOTRE TRAVAIL) -->
+                        <VBox alignment="CENTER" spacing="15.0" onMouseClicked="#handleGoToGamesFromMouse" 
+                              GridPane.columnIndex="2" style="-fx-background-color: #1a1a4a; -fx-border-color: #f45b69; -fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 30; -fx-cursor: hand;" prefWidth="220">
+                            <children>
+                                <Label text="🎮" style="-fx-font-size: 40;" />
+                                <Label text="GESTION JEUX SKILLQUEST" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+                
+                <Button text="VOIR VUE ÉTUDIANT (ADMIN)" onAction="#ouvrirVueEtudiant" 
+                        style="-fx-background-color: #ff00ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;" />
+                
+                <Button text="DÉCONNEXION" onAction="#deconnexion" 
+                        style="-fx-background-color: transparent; -fx-text-fill: #bdc3c7; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-cursor: hand;" />
             </children>
-        </StackPane>
-    </center>
-
-</BorderPane>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -57,7 +57,7 @@ public class VerificationCodeController {
                 matchingCert.setLevel(currentExam.getLevel());
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CertificatVue.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CertificatVue.fxml"));
             Parent root = loader.load();
             
             CertificatVueController controller = loader.getController();
@@ -72,9 +72,24 @@ public class VerificationCodeController {
     }
 
     @FXML
+    public void ouvrirGoogleQuiz(ActionEvent event) {
+        try {
+            // Lien vers le Google Forms (à adapter si besoin)
+            String url = "https://forms.google.com"; 
+            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else {
+                Runtime.getRuntime().exec("open " + url);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     public void cancel(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SelectionNiveau.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SelectionNiveau.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

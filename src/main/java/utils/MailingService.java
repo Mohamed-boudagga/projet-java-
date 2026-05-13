@@ -14,7 +14,7 @@ public class MailingService {
     private static final String SENDER_EMAIL = "amalghali.2004@gmail.com";
     private static final String SENDER_PASSWORD = "ghalighali22032004";
 
-    public static void sendNewGameNotification(String recipientEmail, Games game) {
+    public static void sendNewGameNotification(String recipientEmail, entities.Games game) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -81,7 +81,7 @@ public class MailingService {
         }
     }
 
-    public static void sendBulkNotification(List<String> recipientEmails, Games game) {
+    public static void sendBulkNotification(List<String> recipientEmails, entities.Games game) {
         if (recipientEmails == null || recipientEmails.isEmpty()) return;
 
         Properties props = new Properties();

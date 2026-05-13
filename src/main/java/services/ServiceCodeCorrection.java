@@ -1,16 +1,18 @@
 package services;
 
 import entities.CodeCorrection;
+import interfaces.IService;
 import tools.Mydb;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceCodeCorrection {
+public class ServiceCodeCorrection implements IService<CodeCorrection> {
 
     private Connection connection = Mydb.getInstance().getConnection();
 
-    public void ajouter(CodeCorrection c) {
+    @Override
+    public void add(CodeCorrection c) {
         try {
             String sql = "INSERT INTO code_corrections (game_id, instructions, buggy_code, correct_code) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -22,6 +24,38 @@ public class ServiceCodeCorrection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void ajouter(CodeCorrection c) { add(c); }
+
+    @Override
+    public void update(CodeCorrection c) {
+        try {
+            String sql = "UPDATE code_corrections SET instructions=?, buggy_code=?, correct_code=? WHERE id=?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, c.getInstructions());
+            ps.setString(2, c.getBuggyCode());
+            ps.setString(3, c.getCorrectCode());
+            ps.setInt(4, c.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(CodeCorrection c) {
+        supprimer(c.getId());
+    }
+
+    @Override
+    public List<CodeCorrection> getAll() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public CodeCorrection getById(int id) {
+        return null;
     }
 
     public List<CodeCorrection> getByGameId(int gameId) {

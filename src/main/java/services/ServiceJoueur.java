@@ -1,6 +1,7 @@
 package services;
 
 import entities.Joueur;
+import interfaces.IService;
 import tools.Mydb;
 
 import java.sql.*;
@@ -70,12 +71,12 @@ public class ServiceJoueur implements IService<Joueur> {
     // --- Méthodes Obligatoires d'IService ---
 
     @Override
-    public void ajouter(Joueur j) {
+    public void add(Joueur j) {
         rejoindreBattle(j.getUserId(), j.getBattleId());
     }
 
     @Override
-    public void modifier(Joueur j) {
+    public void update(Joueur j) {
         try {
             String sql = "UPDATE joueur SET score=?, rank=?, status=? WHERE id=?";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -90,7 +91,7 @@ public class ServiceJoueur implements IService<Joueur> {
     }
 
     @Override
-    public void supprimer(Joueur j) {
+    public void delete(Joueur j) {
         try {
             String sql = "DELETE FROM joueur WHERE id=?";
             PreparedStatement ps = connection.prepareStatement(sql);

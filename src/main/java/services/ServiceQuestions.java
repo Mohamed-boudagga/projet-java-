@@ -1,18 +1,20 @@
 package services;
 
 import entities.Question;
+import interfaces.IService;
 import tools.Mydb;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceQuestions {
+public class ServiceQuestions implements IService<Question> {
 
     private Connection getConnection() {
         return Mydb.getInstance().getConnection();
     }
 
-    public void ajouter(Question q) {
+    @Override
+    public void add(Question q) {
         Connection connection = getConnection();
         if (connection == null) return;
         try (PreparedStatement ps = connection.prepareStatement(
@@ -29,7 +31,11 @@ public class ServiceQuestions {
         }
     }
 
-    public void modifier(Question q) {
+    public void ajouter(Question q) { add(q); }
+    public void modifier(Question q) { update(q); }
+
+    @Override
+    public void update(Question q) {
         Connection connection = getConnection();
         if (connection == null) return;
         try (PreparedStatement ps = connection.prepareStatement(
@@ -44,6 +50,21 @@ public class ServiceQuestions {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void delete(Question q) {
+        supprimer(q.getId());
+    }
+
+    @Override
+    public List<Question> getAll() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Question getById(int id) {
+        return null;
     }
 
 

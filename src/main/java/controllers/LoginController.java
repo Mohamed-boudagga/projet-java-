@@ -21,6 +21,8 @@ public class LoginController implements Initializable {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField passwordVisibleField;
+    @FXML private ToggleButton eyeButton;
     @FXML private RadioButton radioEtudiant;
     @FXML private RadioButton radioAdmin;
     @FXML private Label erreurLabel;
@@ -31,7 +33,26 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Initialisation si nécessaire
+        // Lier les deux champs de mot de passe
+        passwordVisibleField.textProperty().bindBidirectional(passwordField.textProperty());
+    }
+
+    @FXML
+    private void togglePassword(ActionEvent event) {
+        if (eyeButton.isSelected()) {
+            passwordVisibleField.setVisible(true);
+            passwordField.setVisible(false);
+            eyeButton.setText("🔒");
+        } else {
+            passwordVisibleField.setVisible(false);
+            passwordField.setVisible(true);
+            eyeButton.setText("👁");
+        }
+    }
+
+    @FXML
+    private void handleMotDePasseOublie(ActionEvent event) {
+        System.out.println("Mot de passe oublié cliqué.");
     }
 
     @FXML

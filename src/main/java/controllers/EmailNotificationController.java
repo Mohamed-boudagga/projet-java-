@@ -61,7 +61,7 @@ public class EmailNotificationController {
         }
 
         lblStatus.setText("⏳ Envoi à " + emails.size() + " étudiants...");
-        MailingService.sendBulkNotification(emails, game);
+        MailingService.sendBulkNotification(emails, (entities.Games) game);
 
         lblStatus.setText("✅ Notifications groupées envoyées !");
         lblStatus.setStyle("-fx-text-fill: #10b981;");

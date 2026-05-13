@@ -75,6 +75,27 @@ public class ServiceExam implements IService<Exam> {
         }
     }
 
+    @Override
+    public Exam getById(int id) {
+        String req = "SELECT * FROM `exam` WHERE `id` = ?";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Exam ex = new Exam();
+                ex.setId(rs.getInt("id"));
+                ex.setNom(rs.getString("nom"));
+                ex.setLevel(rs.getInt("level"));
+                ex.setDureeMinutes(rs.getInt("dureeMinutes"));
+                return ex;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
     // Méthode bonus : chercher par niveau
     public List<Exam> getByLevel(int level) {
         List<Exam> exams = new ArrayList<>();

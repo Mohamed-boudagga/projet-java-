@@ -182,9 +182,9 @@ public class AdminGamesController {
 
             if (isEditMode) {
                 g.setId(Integer.parseInt(txtId.getText()));
-                serviceGames.modifier(g);
+                serviceGames.update(g);
             } else {
-                serviceGames.ajouter(g);
+                serviceGames.add(g);
                 
                 // Flux Automatique : Ouverture immédiate de la gestion des questions pour le nouveau jeu
                 txtId.setText(String.valueOf(g.getId()));
@@ -209,7 +209,7 @@ public class AdminGamesController {
 
         Optional<ButtonType> result = ask.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            serviceGames.supprimer(g);
+            serviceGames.delete(g);
             loadGames();
         }
     }
@@ -263,9 +263,9 @@ public class AdminGamesController {
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginSelection.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 500));
+            stage.setScene(new Scene(root));
         } catch (Exception e) {
             e.printStackTrace();
         }
